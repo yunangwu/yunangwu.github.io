@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on My-First-Blog</title>
+    <link>http://localhost:1313/tags/go/</link>
+    <description>Recent content in Go on My-First-Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 25 May 2024 18:46:22 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Post</title>
+      <link>http://localhost:1313/post/2024/05/25/hugo/</link>
+      <pubDate>Sat, 25 May 2024 18:46:22 +0800</pubDate>
+      <guid>http://localhost:1313/post/2024/05/25/hugo/</guid>
+      <description>Introduction This is bold text, and this is emphasized text.&#xA;Visit the Hugo website!&#xA;$$ \frac{1}{2} + \frac{1}{4} = \frac{3}{4} $$</description>
+    </item>
+  </channel>
+</rss>
