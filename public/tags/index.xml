@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on My-First-Blog</title>
-    <link>https://example.org/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on My-First-Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 25 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Misc</title>
-      <link>https://example.org/tags/misc/</link>
+      <link>/tags/misc/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://example.org/tags/misc/</guid>
+      <guid>/tags/misc/</guid>
       <description></description>
     </item>
   </channel>
