@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on My-First-Blog</title>
-    <link>/post/</link>
+    <link>//localhost:1313/post/</link>
     <description>Recent content in Posts on My-First-Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 25 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My First Post</title>
-      <link>/post/2024/05/25/my-first-post/</link>
+      <link>//localhost:1313/post/2024/05/25/my-first-post/</link>
       <pubDate>Sat, 25 May 2024 00:00:00 +0000</pubDate>
-      <guid>/post/2024/05/25/my-first-post/</guid>
-      <description>Introduction HiHiHi!&#xA;HiHiHi! </description>
+      <guid>//localhost:1313/post/2024/05/25/my-first-post/</guid>
+      <description>Text In a bustling city, amidst towering skyscrapers, lived a forgotten clockmaker named Ezra. His tiny shop, tucked away in an alley, held secrets of intricate timepieces crafted with precision and love. Each tick echoed memories of forgotten moments, each tock whispered dreams of lost souls. Yet, despite the cacophony of life outside, Ezra found solace in the symphony of gears and springs. One stormy night, a stranger stumbled upon his shop, seeking shelter from the tempest.</description>
     </item>
   </channel>
 </rss>

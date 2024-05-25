@@ -4,7 +4,7 @@ languageCode: "en-us"
 
 params:
   subtitle: "The Best Blog on Earth"
-  footer: "&copy; Yun-Ang Wu 2024 -- {Year}"
+  footer: "&copy; [Yun-Ang Wu](https://www.linkedin.com/in/yun-ang-wu-b51609256/) 2024 -- {Year}"
 
 title: "My-First-Blog"
 
