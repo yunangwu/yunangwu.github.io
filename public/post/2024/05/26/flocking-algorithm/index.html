@@ -40,7 +40,7 @@
 <style>
     #container {
         position: relative;
-        width: 500px;
+        width: 800px;
         margin: 0 auto;
     }
     #canvas {
@@ -93,7 +93,7 @@
 </head>
 <body>
 <div id="container">
-    <canvas id="canvas" width="500" height="300"></canvas><br>
+    <canvas id="canvas" width="800" height="500"></canvas><br>
     <button id="myButton">&#x21bb;</button>
     <button id="myButton2">&#x29BF;</button>
 </div>
@@ -121,14 +121,14 @@
     const ctx = canvas.getContext('2d');
 
     
-    const radius = 8;
+    const radius = 4;
     let threshold = 100;
     function tooClose(threshold) {
         return threshold * 0.5;
     }
     const color = 'rgb(0, 128, 255)';
-    const birdCount = 40;
-    const speed = 2;
+    const birdCount = 200;
+    const speed = 1.5;
     const maxSpeed = 1.5;
 
     const outerWidthMin = - 0.5 * radius;
