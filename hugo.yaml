@@ -24,3 +24,8 @@ menu:
 
 permalinks:
   post: "/post/:year/:month/:day/:slug/"
+
+markup:
+  highlight:
+    linenos: true
+    style: github

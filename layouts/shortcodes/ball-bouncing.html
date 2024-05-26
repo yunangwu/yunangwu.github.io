@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ball Bouncing Animation</title>
+<style>
+    #canvas {
+        /* border: 1px solid black; */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 20px;
+        background: #e5e5e5
+    }
+</style>
+</head>
+<body>
+<canvas id="canvas" width="400" height="250"></canvas><br>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const ball = {
+        x: canvas.width / 2 + 20,
+        y: canvas.height / 2,
+        radius: 25,
+        dx: 2,
+        dy: -2,
+        color: '#dddddd' // Initial color
+    };
+
+    let isMouseOverBall = false;
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ball.color;
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        drawBall();
+
+        // Check boundaries
+        if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
+            ball.dx = -ball.dx;
+        }
+        if (ball.y + ball.dy > canvas.height - ball.radius || ball.y + ball.dy < ball.radius) {
+            ball.dy = -ball.dy;
+        }
+
+        // Update ball position
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        // Update ball color based on mouse position
+        ball.color = isMouseOverBall ? '#bbbbbb' : '#cccccc';
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        update();
+    }
+
+    // Add mousemove event listener
+    canvas.addEventListener('mousemove', function(event) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // Check if mouse is within the boundaries of the ball
+        isMouseOverBall = Math.sqrt((mouseX - ball.x) ** 2 + (mouseY - ball.y) ** 2) < ball.radius;
+    });
+
+    animate();
+        
+</script>
+</body>
+</html>
