@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flocking | My-First-Blog</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Flocking</span></h1>
+
+<p class="date">2024/05/26</p>
+</div>
+
+<main>
+<h2 id="demo">Demo</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ball Bouncing Animation</title>
+<style>
+    #container {
+        position: relative;
+        width: 500px;
+        margin: 0 auto;
+    }
+    #canvas {
+        display: block;
+        margin: 0 auto;
+        border-radius: 20px;
+        background: #eee;
+    }
+    #myButton {
+        position: absolute;
+        bottom: 40px;
+        right: 20px;
+        padding: 5px 10px;
+        opacity: 0.7;
+        background-color: #c6e2ff;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+    #myButton2 {
+        position: absolute;
+        bottom: 100px;
+        right: 20px;
+        padding: 5px 10px;
+        opacity: 0.7;
+        background-color: #ffd0d2;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+    #myButton:hover {
+        background-color: #7bbbff;
+    }
+    #myButton2:hover {
+        background-color: #ff8d8d;
+    }
+    .slider-container {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+    }
+    .slider-container label {
+        margin-right: 10px;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <canvas id="canvas" width="500" height="300"></canvas><br>
+    <button id="myButton">&#x21bb;</button>
+    <button id="myButton2">&#x29BF;</button>
+</div>
+<div class="slider-container">
+    <label for="cohesionSlider">cohesion:</label>
+    <input type="range" id="cohesionSlider" min="0" max="100" value="50">
+</div>
+<div class="slider-container">
+    <label for="alignmentSlider">alignment:</label>
+    <input type="range" id="alignmentSlider" min="0" max="100" value="50">
+</div>
+<div class="slider-container">
+    <label for="separationSlider">separation:</label>
+    <input type="range" id="separationSlider" min="0" max="100" value="50">
+</div>
+<div class="slider-container">
+    <label for="thresholdSlider">threshold:</label>
+    <input type="range" id="thresholdSlider" min="0" max="300" value="50">
+</div>
+
+<script>
+
+    
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    
+    const radius = 8;
+    let threshold = 100;
+    function tooClose(threshold) {
+        return threshold * 0.5;
+    }
+    const color = 'rgb(0, 128, 255)';
+    const birdCount = 40;
+    const speed = 2;
+    const maxSpeed = 1.5;
+
+    const outerWidthMin = - 0.5 * radius;
+    const outerWidthMax = canvas.width + 0.5 * radius;
+    const outerHeightMin = - 0.5 * radius;
+    const outerHeightMax = canvas.height + 0.5 * radius;
+
+    function drawTriangle(x, y, dx, dy, radius, color) {
+        const angle = Math.atan2(dy, dx);
+
+        const vertex1 = {
+            x: x + radius * Math.cos(angle),
+            y: y + radius * Math.sin(angle)
+        };
+        const vertex2 = {
+            x: x + radius * Math.cos(angle + 2 * Math.PI / 3),
+            y: y + radius * Math.sin(angle + 2 * Math.PI / 3)
+        };
+        const vertex3 = {
+            x: x + radius * Math.cos(angle - 2 * Math.PI / 3),
+            y: y + radius * Math.sin(angle - 2 * Math.PI / 3)
+        };
+
+        ctx.beginPath();
+        ctx.moveTo(vertex1.x, vertex1.y);
+        ctx.lineTo(vertex2.x, vertex2.y);
+        ctx.lineTo(vertex3.x, vertex3.y);
+
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    function normalize(dx, dy) {
+        let length = Math.sqrt(dx * dx + dy * dy);
+        if (length !== 0) {
+            dx /= length;
+            dy /= length;
+        } else {
+            dx = 1;
+            dy = 0;
+        }
+        return { dx, dy };
+    }
+
+    function mapToZeroToOne(x) {
+        if (x < 1) {
+            return 1;
+        }else{
+            return 1 / x;
+        }
+    }
+
+    class Bird {
+        constructor(x, y, dx, dy){
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+        }
+        draw() {
+            drawTriangle(
+                this.x,
+                this.y,
+                this.dx,
+                this.dy,
+                radius,
+                color
+            )
+        }
+        drawWithColor(color){
+            drawTriangle(
+                this.x,
+                this.y,
+                this.dx,
+                this.dy,
+                radius,
+                color
+            )
+        }
+        loopingUpdate() {
+            if (this.x > outerWidthMax) {
+                this.x = outerWidthMin;
+            } else if (this.x < outerWidthMin) {
+                this.x = outerWidthMax;
+            }
+
+            if (this.y > outerHeightMax) {
+                this.y = 0;
+            } else if (this.y < outerHeightMin) {
+                this.y = outerHeightMax;
+            }
+        }
+        update(speed) {
+            this.x += this.dx * speed;
+            this.y += this.dy * speed;
+
+            this.loopingUpdate();
+            this.draw();
+        }
+        _drawLineBetween(otherBird) {
+            var result = this.minDistWith(otherBird);
+            const alpha = (1 - (result.minDistance / threshold)) * 0.3;
+            ctx.strokeStyle = `rgba(0, 128, 255, ${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(result.x, result.y);
+            ctx.stroke();
+        }
+        drawLineBetween(otherBird) {
+            this._drawLineBetween(otherBird)
+            otherBird._drawLineBetween(this)
+        }
+        minDistWith(otherBird) {
+            let xCopys = [];
+            let yCopys = [];
+            for (var i = -1; i < 2; i++){
+                for (var j = -1; j < 2; j++){
+                    xCopys.push(otherBird.x - i * (canvas.width + radius));
+                    yCopys.push(otherBird.y - j * (canvas.height + radius));
+                }
+            }
+            let minDistance = Infinity;
+            let xIndex = Infinity;
+            let yIndex = Infinity;
+            for (var i = 0; i < xCopys.length; i++){
+                let distance = Math.sqrt(Math.pow(xCopys[i] - this.x, 2) + Math.pow(yCopys[i] - this.y, 2));
+                if (distance < minDistance){
+                    minDistance = distance;
+                    xIndex = xCopys[i];
+                    yIndex = yCopys[i];
+                }
+            }
+            return {
+                minDistance: minDistance,
+                x: xIndex,
+                y: yIndex
+            };
+        }
+        isNeighbor(otherBird, threshold) {
+            return this.minDistWith(otherBird).minDistance <= threshold;
+        }
+    }
+
+    class Birds {
+        constructor(birdCount, speed){
+            this.birds = [];
+            this.birdCount = birdCount;
+            this.speed = speed;
+            for (let i = 0; i < this.birdCount; i++) {
+                let x = Math.random() * (canvas.width - 2 * radius) + radius;
+                let y = Math.random() * (canvas.height - 2 * radius) + radius;
+                let dx = (Math.random() - 0.5);
+                let dy = (Math.random() - 0.5);
+                let { dx: ndx, dy: ndy } = normalize(dx, dy);
+                this.birds.push(new Bird(x, y, ndx, ndy));
+            }
+        }
+
+        drawBird(){
+            this.birds.forEach(bird => {
+            bird.update(this.speed);
+        });
+        }
+
+        *getNeighbor(bird, threshold) {
+            for (let i = 0; i < this.birdCount; i++) {
+                if (this.birds[i] !== bird && bird.isNeighbor(this.birds[i], threshold)) {
+                    yield this.birds[i];
+                }
+            }
+        }
+
+        drawConnection() {
+            for (let bird of this.birds) {
+                for (let neighbor of this.getNeighbor(bird, threshold)) {
+                    bird.drawLineBetween(neighbor);
+                }
+            }
+        }
+
+        cohesionUpdate(intensity){
+            let updates = [];
+
+            for (let bird of this.birds) {
+                let neighborCount = 0;
+                let xs = 0;
+                let ys = 0;
+                for (let neighbor of this.getNeighbor(bird, threshold)) {
+                    neighborCount++;
+                    var result = bird.minDistWith(neighbor);
+                    xs += (result.x - bird.x) * mapToZeroToOne(result.minDistance);
+                    ys += (result.y - bird.y) * mapToZeroToOne(result.minDistance);
+                }
+                if(neighborCount) {
+                    xs /= neighborCount;
+                    ys /= neighborCount;
+                }
+                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
+            }
+
+            for (let update of updates) {
+                update.bird.dx += update.xs;
+                update.bird.dy += update.ys;
+            }
+        }
+
+        separationUpdate(intensity){
+            let updates = [];
+
+            for (let bird of this.birds) {
+                let neighborCount = 0;
+                let xs = 0;
+                let ys = 0;
+                for (let neighbor of this.getNeighbor(bird, tooClose(threshold))) {
+                    neighborCount++;
+                    var result = bird.minDistWith(neighbor);
+                    xs -= (result.x - bird.x) * mapToZeroToOne(result.minDistance);
+                    ys -= (result.y - bird.y) * mapToZeroToOne(result.minDistance);
+                }
+                if(neighborCount) {
+                    xs /= neighborCount;
+                    ys /= neighborCount;
+                }
+                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
+            }
+
+            for (let update of updates) {
+                update.bird.dx += update.xs;
+                update.bird.dy += update.ys;
+            }
+        }
+
+        alignmentUpdate(intensity){
+            let updates = [];
+
+            for (let bird of this.birds) {
+                let neighborCount = 0;
+                let xs = 0;
+                let ys = 0;
+                for (let neighbor of this.getNeighbor(bird, threshold)) {
+                    neighborCount++;
+                    var result = bird.minDistWith(neighbor);
+                    xs += neighbor.dx * mapToZeroToOne(result.minDistance);
+                    ys += neighbor.dy * mapToZeroToOne(result.minDistance);
+                }
+                if(neighborCount) {
+                    xs /= neighborCount;
+                    ys /= neighborCount;
+                }
+                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
+            }
+
+            for (let update of updates) {
+                update.bird.dx += update.xs;
+                update.bird.dy += update.ys;
+            }
+        }
+
+        updateSpeedLimit(maxSpeed) {
+            for (let bird of this.birds) {
+                let speed = Math.sqrt(bird.dx * bird.dx + bird.dy * bird.dy);
+                if (speed > maxSpeed) {
+                    let scale = maxSpeed / speed;
+                    bird.dx *= scale;
+                    bird.dy *= scale;
+                }
+            }
+        }
+    }
+
+    birds = new Birds(birdCount, speed)
+
+    function logRescale(val) {
+        val = val / 25 - 4;
+        return Math.exp(val);
+    }
+
+    function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+    }
+
+    const cohesionSlider = document.getElementById('cohesionSlider');
+    const alignmentSlider = document.getElementById('alignmentSlider');
+    const separationSlider = document.getElementById('separationSlider');
+    let drawAdditional = true;
+    birdIndex = 0;
+    let cohesionValue = 0;
+    let alignmentValue = 0;
+    let separationValue = 0;
+
+    document.getElementById('myButton2').addEventListener('click', () => {
+        birdIndex = getRandomInt(birdCount);
+        drawAdditional = ! drawAdditional;
+        console.log(drawAdditional, birdIndex);
+    });
+    cohesionSlider.addEventListener('input', () => {
+        cohesionValue = parseInt(cohesionSlider.value);
+    });
+    alignmentSlider.addEventListener('input', () => {
+        alignmentValue = parseInt(alignmentSlider.value);
+    });
+    separationSlider.addEventListener('input', () => {
+        separationValue = separationSlider.value;
+    });
+    thresholdSlider.addEventListener('input', () => {
+        threshold = thresholdSlider.value;
+    });
+
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        console.log(drawAdditional, birdIndex);
+        
+        
+        birds.drawBird();
+        if (drawAdditional) {
+            for (let neighbor of birds.getNeighbor(birds.birds[birdIndex], threshold)) {
+                birds.birds[birdIndex].drawLineBetween(neighbor);
+                neighbor.drawWithColor('rgb(0, 200, 255)');
+            }
+            for (let neighbor of birds.getNeighbor(birds.birds[birdIndex], tooClose(threshold))) {
+                neighbor.drawWithColor('rgb(0, 255, 150)');
+            }
+            birds.birds[birdIndex].drawWithColor('rgb(255, 255, 255)');
+        }
+
+        birds.alignmentUpdate(logRescale(alignmentValue));
+        birds.separationUpdate(logRescale(separationValue));
+        birds.cohesionUpdate(logRescale(cohesionValue));
+        birds.updateSpeedLimit(maxSpeed);
+    }
+
+    function reset() {
+        birds.birds.forEach(bird => {
+            bird.x = Math.random() * (canvas.width - 2 * radius) + radius;
+            bird.y = Math.random() * (canvas.height - 2 * radius) + radius;
+            let dx = (Math.random() - 0.5);
+            let dy = (Math.random() - 0.5);
+            let { dx: ndx, dy: ndy } = normalize(dx, dy);
+            bird.dx = ndx;
+            bird.dy = ndy;
+        });
+    }
+
+    document.getElementById('myButton').addEventListener('click', reset);
+
+    animate();
+
+</script>
+</body>
+</html>
+
+
+</main>
+
+  <footer>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<script src="//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js" defer></script>
+
+<script src="//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js" defer></script>
+  
+  <hr/>
+  © <a href="https://www.linkedin.com/in/yun-ang-wu-b51609256/">Yun-Ang Wu</a> 2024 &ndash; 2024
+  
+  </footer>
+  </body>
+</html>
+
