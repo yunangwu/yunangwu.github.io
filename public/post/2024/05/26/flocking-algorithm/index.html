@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flocking Algorithm | My-First-Blog</title>
@@ -97,22 +97,7 @@
     <button id="myButton">&#x21bb;</button>
     <button id="myButton2">&#x29BF;</button>
 </div>
-<div class="slider-container">
-    <label for="cohesionSlider">cohesion:</label>
-    <input type="range" id="cohesionSlider" min="0" max="100" value="50">
-</div>
-<div class="slider-container">
-    <label for="alignmentSlider">alignment:</label>
-    <input type="range" id="alignmentSlider" min="0" max="100" value="50">
-</div>
-<div class="slider-container">
-    <label for="separationSlider">separation:</label>
-    <input type="range" id="separationSlider" min="0" max="100" value="50">
-</div>
-<div class="slider-container">
-    <label for="thresholdSlider">threshold:</label>
-    <input type="range" id="thresholdSlider" min="0" max="300" value="50">
-</div>
+
 
 <script>
 
@@ -122,14 +107,15 @@
 
     
     const radius = 4;
-    let threshold = 100;
+    let threshold = 40;
     function tooClose(threshold) {
-        return threshold * 0.5;
+        return threshold * 0.2;
     }
     const color = 'rgb(0, 128, 255)';
     const birdCount = 200;
-    const speed = 1.5;
-    const maxSpeed = 1.5;
+    const initSpeed = 4;
+    const minSpeed = 0.5;
+    const maxSpeed = 5;
 
     const outerWidthMin = - 0.5 * radius;
     const outerWidthMax = canvas.width + 0.5 * radius;
@@ -221,9 +207,9 @@
                 this.y = outerHeightMax;
             }
         }
-        update(speed) {
-            this.x += this.dx * speed;
-            this.y += this.dy * speed;
+        update() {
+            this.x += this.dx;
+            this.y += this.dy;
 
             this.loopingUpdate();
             this.draw();
@@ -273,23 +259,23 @@
     }
 
     class Birds {
-        constructor(birdCount, speed){
+        constructor(birdCount, initSpeed){
             this.birds = [];
             this.birdCount = birdCount;
-            this.speed = speed;
+            this.initSpeed = initSpeed;
             for (let i = 0; i < this.birdCount; i++) {
                 let x = Math.random() * (canvas.width - 2 * radius) + radius;
                 let y = Math.random() * (canvas.height - 2 * radius) + radius;
                 let dx = (Math.random() - 0.5);
                 let dy = (Math.random() - 0.5);
                 let { dx: ndx, dy: ndy } = normalize(dx, dy);
-                this.birds.push(new Bird(x, y, ndx, ndy));
+                this.birds.push(new Bird(x, y, ndx * initSpeed, ndy * initSpeed));
             }
         }
 
         drawBird(){
             this.birds.forEach(bird => {
-            bird.update(this.speed);
+            bird.update();
         });
         }
 
@@ -309,85 +295,70 @@
             }
         }
 
-        cohesionUpdate(intensity){
+        update(separationIntensity, cohesionIntensity, alignmentIntensity){
             let updates = [];
 
             for (let bird of this.birds) {
+
+                let tooCloseCount = 0;
                 let neighborCount = 0;
-                let xs = 0;
-                let ys = 0;
-                for (let neighbor of this.getNeighbor(bird, threshold)) {
-                    neighborCount++;
-                    var result = bird.minDistWith(neighbor);
-                    xs += (result.x - bird.x) * mapToZeroToOne(result.minDistance);
-                    ys += (result.y - bird.y) * mapToZeroToOne(result.minDistance);
-                }
-                if(neighborCount) {
-                    xs /= neighborCount;
-                    ys /= neighborCount;
-                }
-                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
-            }
+                let coh_xs = 0;
+                let coh_ys = 0;
+                let ali_xs = 0;
+                let ali_ys = 0;
+                let sep_xs = 0;
+                let sep_ys = 0;
 
-            for (let update of updates) {
-                update.bird.dx += update.xs;
-                update.bird.dy += update.ys;
-            }
-        }
-
-        separationUpdate(intensity){
-            let updates = [];
-
-            for (let bird of this.birds) {
-                let neighborCount = 0;
-                let xs = 0;
-                let ys = 0;
+                
                 for (let neighbor of this.getNeighbor(bird, tooClose(threshold))) {
-                    neighborCount++;
+                    tooCloseCount++;
                     var result = bird.minDistWith(neighbor);
-                    xs -= (result.x - bird.x) * mapToZeroToOne(result.minDistance);
-                    ys -= (result.y - bird.y) * mapToZeroToOne(result.minDistance);
+
+                    
+                    sep_xs -= (result.x - bird.x);
+                    sep_ys -= (result.y - bird.y);
                 }
-                if(neighborCount) {
-                    xs /= neighborCount;
-                    ys /= neighborCount;
+                if(tooCloseCount) {
+                    sep_xs /= tooCloseCount;
+                    sep_ys /= tooCloseCount;
                 }
-                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
-            }
-
-            for (let update of updates) {
-                update.bird.dx += update.xs;
-                update.bird.dy += update.ys;
-            }
-        }
-
-        alignmentUpdate(intensity){
-            let updates = [];
-
-            for (let bird of this.birds) {
-                let neighborCount = 0;
-                let xs = 0;
-                let ys = 0;
+                
+                
                 for (let neighbor of this.getNeighbor(bird, threshold)) {
                     neighborCount++;
                     var result = bird.minDistWith(neighbor);
-                    xs += neighbor.dx * mapToZeroToOne(result.minDistance);
-                    ys += neighbor.dy * mapToZeroToOne(result.minDistance);
+
+                    coh_xs += result.x;
+                    coh_ys += result.y;
+                    ali_xs += neighbor.dx;
+                    ali_ys += neighbor.dy;
                 }
+                
                 if(neighborCount) {
-                    xs /= neighborCount;
-                    ys /= neighborCount;
+                    coh_xs /= neighborCount;
+                    coh_ys /= neighborCount;
+                    ali_xs /= neighborCount;
+                    ali_ys /= neighborCount;
                 }
-                updates.push({ bird: bird, xs: intensity * xs, ys: intensity * ys });
+                coh_xs -= bird.x;
+                coh_ys -= bird.y;
+                ali_xs = ali_xs - bird.dx;
+                ali_ys = ali_ys - bird.dy;
+                
+                updates.push({
+                    xs: ali_xs * alignmentIntensity + coh_xs * cohesionIntensity + sep_xs * separationIntensity,
+                    ys: ali_xs * alignmentIntensity + coh_ys * cohesionIntensity + sep_ys * separationIntensity
+                });
+                console.log(alignmentIntensity, cohesionIntensity, separationIntensity)
             }
 
-            for (let update of updates) {
-                update.bird.dx += update.xs;
-                update.bird.dy += update.ys;
+            for (const [index, bird] of this.birds.entries()) {
+                bird.dx += updates[index].xs;
+                bird.dy += updates[index].ys;
             }
         }
 
-        updateSpeedLimit(maxSpeed) {
+        updateSpeedLimit(minSpeed, maxSpeed) {
             for (let bird of this.birds) {
                 let speed = Math.sqrt(bird.dx * bird.dx + bird.dy * bird.dy);
                 if (speed > maxSpeed) {
@@ -395,11 +366,16 @@
                     bird.dx *= scale;
                     bird.dy *= scale;
                 }
+                if (speed < minSpeed) {
+                    let scale = minSpeed / speed;
+                    bird.dx *= scale;
+                    bird.dy *= scale;
+                }
             }
         }
     }
 
-    birds = new Birds(birdCount, speed)
+    birds = new Birds(birdCount, initSpeed)
 
     function logRescale(val) {
         val = val / 25 - 4;
@@ -410,39 +386,36 @@
     return Math.floor(Math.random() * max);
     }
 
-    const cohesionSlider = document.getElementById('cohesionSlider');
-    const alignmentSlider = document.getElementById('alignmentSlider');
-    const separationSlider = document.getElementById('separationSlider');
+    
+    
+    
     let drawAdditional = true;
     birdIndex = 0;
-    let cohesionValue = 0;
-    let alignmentValue = 0;
-    let separationValue = 0;
+    const cohesionValue = 0.005;
+    const alignmentValue = 0.001;
+    const separationValue = 0.05;
 
     document.getElementById('myButton2').addEventListener('click', () => {
         birdIndex = getRandomInt(birdCount);
         drawAdditional = ! drawAdditional;
-        console.log(drawAdditional, birdIndex);
     });
-    cohesionSlider.addEventListener('input', () => {
-        cohesionValue = parseInt(cohesionSlider.value);
-    });
-    alignmentSlider.addEventListener('input', () => {
-        alignmentValue = parseInt(alignmentSlider.value);
-    });
-    separationSlider.addEventListener('input', () => {
-        separationValue = separationSlider.value;
-    });
-    thresholdSlider.addEventListener('input', () => {
-        threshold = thresholdSlider.value;
-    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     function animate() {
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        console.log(drawAdditional, birdIndex);
         
         
         birds.drawBird();
@@ -455,12 +428,14 @@
                 neighbor.drawWithColor('rgb(0, 255, 150)');
             }
             birds.birds[birdIndex].drawWithColor('rgb(255, 255, 255)');
+            
         }
-
-        birds.alignmentUpdate(logRescale(alignmentValue));
-        birds.separationUpdate(logRescale(separationValue));
-        birds.cohesionUpdate(logRescale(cohesionValue));
-        birds.updateSpeedLimit(maxSpeed);
+        birds.update(
+            separationValue,
+            cohesionValue,
+            alignmentValue
+        );
+        birds.updateSpeedLimit(minSpeed, maxSpeed);
     }
 
     function reset() {
