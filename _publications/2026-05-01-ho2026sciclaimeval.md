@@ -13,7 +13,5 @@ links:
     url: 'https://doi.org/10.63317/4ap9rg2gnwmf'
   - name: arXiv
     url: 'https://arxiv.org/abs/2602.07621'
-  - name: BibTeX
-    url: '/files/bibtex/ho2026sciclaimeval.bib'
 generated_by: bib2pubs
 ---

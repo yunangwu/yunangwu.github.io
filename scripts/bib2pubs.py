@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate _publications/*.md and files/bibtex/*.bib from _bibliography/publications.bib.
+"""Generate _publications/*.md from _bibliography/publications.bib.
 
 Runs automatically before every Jekyll build (see _plugins/bib2pubs.rb), so the
 .bib file is the only thing to edit. No third-party dependencies.
@@ -13,7 +13,6 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BIB = os.path.join(ROOT, "_bibliography", "publications.bib")
 PUB_DIR = os.path.join(ROOT, "_publications")
-BIBTEX_DIR = os.path.join(ROOT, "files", "bibtex")
 MARKER = "generated_by: bib2pubs"
 
 # Name to highlight in author lists, read from _config.yml (author.name)
@@ -169,7 +168,6 @@ def render(etype, key, f, me):
         links.append(("Code", f["code"]))
     if f.get("slides"):
         links.append(("Slides", f["slides"]))
-    links.append(("BibTeX", f"/files/bibtex/{slug}.bib"))
 
     fm = [
         "---",
@@ -196,16 +194,6 @@ def render(etype, key, f, me):
     return date, slug, "\n".join(fm) + "\n"
 
 
-# Fields that only drive the website and should not appear in the downloadable BibTeX
-SITE_ONLY = ("category", "slides", "code", "note", "abbr")
-
-
-def clean_bibtex(raw):
-    lines = [l for l in raw.splitlines()
-             if not re.match(r"\s*(%s)\s*=" % "|".join(SITE_ONLY), l)]
-    return re.sub(r",(\s*\n\})$", r"\1", "\n".join(lines)) + "\n"
-
-
 def write_if_changed(path, content):
     if os.path.exists(path):
         with open(path, encoding="utf-8") as fh:
@@ -221,20 +209,17 @@ def main():
         entries = parse_bib(fh.read())
     me = site_author()
     os.makedirs(PUB_DIR, exist_ok=True)
-    os.makedirs(BIBTEX_DIR, exist_ok=True)
 
-    keep_md, keep_bib, changed = set(), set(), 0
+    keep_md, changed = set(), 0
     for etype, key, f, raw in entries:
         missing = [k for k in ("title", "author", "year") if k not in f]
         if missing:
             print(f"bib2pubs: skipping {key}: missing {', '.join(missing)}", file=sys.stderr)
             continue
         date, slug, md = render(etype, key, f, me)
-        md_name, bib_name = f"{date}-{slug}.md", f"{slug}.bib"
+        md_name = f"{date}-{slug}.md"
         keep_md.add(md_name)
-        keep_bib.add(bib_name)
         changed += write_if_changed(os.path.join(PUB_DIR, md_name), md)
-        changed += write_if_changed(os.path.join(BIBTEX_DIR, bib_name), clean_bibtex(raw))
 
     # Remove files generated earlier for entries that no longer exist (hand-written files are left alone)
     for name in os.listdir(PUB_DIR):
@@ -244,10 +229,6 @@ def main():
                 if MARKER in fh.read():
                     os.remove(path)
                     changed += 1
-    for name in os.listdir(BIBTEX_DIR):
-        if name not in keep_bib:
-            os.remove(os.path.join(BIBTEX_DIR, name))
-            changed += 1
 
     print(f"bib2pubs: {len(keep_md)} publications ({changed} files updated)")
 

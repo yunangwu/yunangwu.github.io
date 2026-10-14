@@ -11,7 +11,5 @@ citation: 'Xanh Ho, Tian Cheng Xia, Khoa Duong, <b>Yun-Ang Wu</b>, Ha-Thanh Nguy
 links:
   - name: Paper
     url: 'https://openreview.net/forum?id=cK8YYMc65B'
-  - name: BibTeX
-    url: '/files/bibtex/ho2025decontextualization.bib'
 generated_by: bib2pubs
 ---

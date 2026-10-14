@@ -11,7 +11,5 @@ citation: 'André Greiner-Petter, <b>Yun-Ang Wu</b>, Yuka Kitamura, Kon Woo Kim,
 links:
   - name: Paper
     url: 'https://ceur-ws.org/Vol-4283/paper389.pdf'
-  - name: BibTeX
-    url: '/files/bibtex/greinerpetter2026pan.bib'
 generated_by: bib2pubs
 ---
