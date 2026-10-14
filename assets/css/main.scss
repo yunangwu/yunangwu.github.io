@@ -1,0 +1,58 @@
+---
+---
+
+/*
+ * This file controls what is imported from /_sass
+ *
+ * Note that the files are processed in the order they are imported, so they are partly
+   sorted by the dependencies. Also, the first two lines of the file are required by Jekyll.
+ */
+
+@import
+    "vendor/breakpoint/breakpoint",
+
+    "themes",
+    "theme/{{ site.site_theme | default: 'default' | append: '_light' }}",
+    "theme/{{ site.site_theme | default: 'default' | append: '_dark' }}",
+
+    "include/mixins",
+    "vendor/susy/susy",
+
+    "layout/reset",
+    "layout/base",
+
+    "include/utilities",
+    "layout/tables",
+    "layout/buttons",
+    "layout/notices",
+    "layout/masthead",
+    "layout/navigation",
+    "layout/footer",
+    "syntax",
+
+    "layout/forms",
+
+    "layout/page",
+    "layout/archive",
+    "layout/sidebar"
+;
+/* Publication list (_includes/publication-item.html) */
+.pub-list { padding-left: 1.2em; }
+.pub-item { margin-bottom: 1em; line-height: 1.5; }
+.pub-title { font-weight: bold; }
+.pub-item .pub-link {
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0 0.45em;
+  font-size: 0.75em;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+.pub-meta, .pub-note { font-size: 0.85em; }
+.pub-item .pub-link-pending { opacity: 0.5; cursor: default; }
+
+/* Single-page navigation: smooth scrolling to sections, clear of the fixed top bar */
+html { scroll-behavior: smooth; }
+.page__content [id] { scroll-margin-top: 5em; }

@@ -1,0 +1,9 @@
+{% assign pub = include.pub %}
+{% capture dup %} ({{ pub.abbr }}){% endcapture %}
+<li class="pub-item">
+  <span class="pub-title">{{ pub.title }}</span>
+  {% for link in pub.links %}<a class="pub-link" href="{% if link.url contains '://' %}{{ link.url }}{% else %}{{ link.url | relative_url }}{% endif %}">{{ link.name }}</a>{% endfor %}
+  <br>
+  <span class="pub-meta">{{ pub.authors }}. <i>{{ pub.venue | remove: dup }}</i>.{% if pub.abbr %} <strong>({{ pub.abbr }})</strong>{% endif %}</span>
+  {% if pub.note %}<br><span class="pub-note">{{ pub.note | markdownify | remove: '<p>' | remove: '</p>' | strip }}</span>{% endif %}
+</li>

@@ -1,0 +1,9 @@
+{% assign talk = include.talk %}
+<li class="pub-item">
+  <span class="pub-title">{{ talk.title }}</span>
+  {% for link in talk.links %}<a class="pub-link" href="{% if link.url contains '://' %}{{ link.url }}{% else %}{{ link.url | relative_url }}{% endif %}">{{ link.name }}</a>{% endfor %}
+  {% if talk.translation %}<br><span class="pub-meta"><i>{{ talk.translation }}</i></span>{% endif %}
+  <br>
+  <span class="pub-meta">{% if talk.type %}{{ talk.type }}, {% endif %}{{ talk.venue }}{% if talk.location %}, {{ talk.location }}{% endif %}. <strong>({{ talk.date | date: "%b %Y" }})</strong></span>
+  {% if talk.note %}<br><span class="pub-note">{{ talk.note | markdownify | remove: '<p>' | remove: '</p>' | strip }}</span>{% endif %}
+</li>

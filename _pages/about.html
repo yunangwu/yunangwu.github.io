@@ -1,0 +1,85 @@
+---
+permalink: /
+title: "About me"
+author_profile: true
+redirect_from:
+  - /about/
+  - /about.html
+  - /cv/
+  - /publications/
+  - /talks/
+  - /resume
+---
+
+{% comment %} The whole site is this one page. The top menu (_data/navigation.yml) links to the section ids below. {% endcomment %}
+
+<section id="about">
+{% capture intro %}
+I'm an LLM researcher interested in making language models more capable and useful. I am a Project Researcher at the [Research and Development Center for Large Language Models](https://llmc.nii.ac.jp/) (LLMC) at the National Institute of Informatics (NII), Tokyo, and a Ph.D. student in Informatics at The Graduate University for Advanced Studies, SOKENDAI.
+
+Currently, I work on post-training for the [LLM-jp](https://llm-jp.nii.ac.jp/) series at LLMC, and my Ph.D. research focuses on measuring the scientific research capabilities of LLMs.
+{% endcapture %}
+{{ intro | markdownify }}
+</section>
+
+<h2 id="experience">Experience</h2>
+{% capture work %}
+* **Project Researcher**, National Institute of Informatics, Tokyo, Nov 2025 – present
+* **Research Intern**, National Institute of Informatics, Tokyo, Mar 2025 – Aug 2025
+* **Machine Learning Scientist (Intern)**, Appier, Taipei, Nov 2023 – Feb 2025
+{% endcapture %}
+{{ work | markdownify }}
+
+<h2 id="education">Education</h2>
+{% capture education %}
+* **Ph.D. in Informatics**, The Graduate University for Advanced Studies, SOKENDAI, Oct 2026 – present
+* **M.S.**, Graduate Institute of Networking and Multimedia, National Taiwan University, Feb 2023 – Sep 2025
+* **B.S. in Mathematics**, The University of Tokyo, Apr 2018 – Mar 2022
+{% endcapture %}
+{{ education | markdownify }}
+
+<h2 id="models">Model Development</h2>
+<ul class="pub-list">
+  <li class="pub-item">
+    <span class="pub-title">LLM-jp-4.1</span>
+    <a class="pub-link" href="https://llm-jp.nii.ac.jp/blog/llm-jp-4-1/">Blog</a><a class="pub-link" href="https://huggingface.co/llm-jp">Models</a>
+    <br>
+    <span class="pub-meta">Open Japanese LLM series (8B, 33B, 32B-A3B) from LLM-jp, NII. Developed the tool-calling capability in post-training. <strong>(Sep 2026)</strong></span>
+  </li>
+  <!-- TODO: when the arXiv paper is out, replace the "coming soon" span with
+       <a class="pub-link" href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a> and add the paper to _bibliography/publications.bib -->
+  <li class="pub-item">
+    <span class="pub-title">LLM-jp-4</span>
+    <a class="pub-link" href="https://huggingface.co/llm-jp">Models</a><span class="pub-link pub-link-pending">Paper (coming soon)</span>
+    <br>
+    <span class="pub-meta">Open Japanese LLM series from LLM-jp, NII. Contributed to post-training.</span>
+  </li>
+</ul>
+
+<h2 id="publications">Publications</h2>
+
+{% comment %} Publications are generated from _bibliography/publications.bib (see scripts/bib2pubs.py) {% endcomment %}
+{% assign pubs = site.publications | sort: "date" | reverse %}
+{% for category in site.publication_category %}
+  {% assign items = pubs | where: "category", category[0] %}
+  {% if items.size > 0 %}
+    <h3>{{ category[1].title }}</h3>
+    <ul class="pub-list">
+      {% for pub in items %}
+        {% include publication-item.html pub=pub %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endfor %}
+
+{% comment %} Each talk is a file in _talks/. Front matter: title, translation (optional), type, venue, date, location,
+links (list of name/url, e.g. Slides, Video, Event), note (optional, Markdown allowed). {% endcomment %}
+{% assign talks = site.talks | sort: "date" | reverse %}
+{% if talks.size > 0 %}
+  <h2 id="talks">Talks</h2>
+  <ul class="pub-list">
+    {% for talk in talks %}
+      {% include talk-item.html talk=talk %}
+    {% endfor %}
+  </ul>
+{% endif %}
