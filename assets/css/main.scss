@@ -56,3 +56,6 @@
 /* Single-page navigation: smooth scrolling to sections, clear of the fixed top bar */
 html { scroll-behavior: smooth; }
 .page__content [id] { scroll-margin-top: 5em; }
+
+/* Keep the site title on one line; menu items that don't fit move into the hamburger menu */
+.masthead__menu-item--lg { white-space: nowrap; }
