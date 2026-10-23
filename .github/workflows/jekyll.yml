@@ -24,14 +24,14 @@ concurrency:
 jobs:
   # Build job
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
       - name: Setup Ruby, JRuby and TruffleRuby
         uses: ruby/setup-ruby@v1.328.0
         with:
-          ruby-version: '3.1'
+          ruby-version: '3.4'
           bundler-cache: true
           cache-version: 0
       - name: Configure GitHub Pages
@@ -49,7 +49,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - name: Deploy to GitHub Pages
