@@ -59,3 +59,7 @@ html { scroll-behavior: smooth; }
 
 /* Keep the site title on one line; menu items that don't fit move into the hamburger menu */
 .masthead__menu-item--lg { white-space: nowrap; }
+
+/* Disable the macOS "rubber band" bounce at the top/bottom of the page: the top bar and sidebar are
+   fixed, so the bounce pulls only the main column away from them and leaves a gap */
+html, body { overscroll-behavior-y: none; }
